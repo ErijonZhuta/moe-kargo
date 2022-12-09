@@ -1,4 +1,4 @@
-function NewItems({ text, address, price, handleEdit, handleDelete }) {
+function Item({ text, address, price, handleEdit, handleDelete }) {
   return (
     <div className="flex flex-col bg-white items-center border-solid border-1 space-y-6 pt-8 pb-4 rounded-3xl shadow-md ">
       <div className="flex-1 text-center py-4">
@@ -27,4 +27,4 @@ function NewItems({ text, address, price, handleEdit, handleDelete }) {
   );
 }
 
-export default NewItems;
+export default Item;

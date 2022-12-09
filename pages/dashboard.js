@@ -1,4 +1,4 @@
-import NewItems from "../components/NewItems";
+import Item from "../components/Item";
 import DashLayout from "../layouts/DashLayout";
 import ShopsCard from "../components/ShopsCard";
 import circle from "../public/plus_circle.svg";
@@ -74,7 +74,7 @@ function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mx-auto max-w-full px-4 sm:px-6">
             {/* Permbajtja e faqes */}
             {orders.map(({ id, text, price, address }, index) => (
-              <NewItems
+              <Item
                 key={id}
                 text={text}
                 price={price}
