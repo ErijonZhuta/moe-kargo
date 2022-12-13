@@ -1,6 +1,5 @@
-import DashLayout from "../layouts/DashLayout";
-import Card from "../components/Card";
-import ShopsCard from "../components/ShopsCard";
+import { DashLayout } from "../layouts/DashLayout";
+import { ShopsCard } from "../components/ShopsCard";
 import circle from "../public/plus_circle.svg";
 import logo from "../public/logo.svg";
 import { Fragment, useState, useEffect } from "react";

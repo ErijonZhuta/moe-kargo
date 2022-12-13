@@ -8,7 +8,7 @@ const userNavigation = [
   { name: "Sign out", href: "#" },
 ];
 import Image from "next/future/image";
-function HeaderDashboard() {
+export const HeaderDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -74,5 +74,4 @@ function HeaderDashboard() {
       </div>
     </div>
   );
-}
-export default HeaderDashboard;
+};

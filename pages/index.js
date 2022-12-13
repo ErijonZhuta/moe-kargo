@@ -2,10 +2,10 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Image from "next/future/image";
 import Link from "next/link";
-import Card2 from "../components/Card2";
+import { Card2 } from "../components/Card2";
 import logo from "../public/logo.svg";
-import Card from "../components/Card";
-import MainLayout from "../layouts/MainLayout";
+import { Card } from "../components/Card";
+import { MainLayout } from "../layouts/MainLayout";
 
 function Home() {
   return (

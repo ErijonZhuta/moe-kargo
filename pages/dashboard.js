@@ -1,6 +1,6 @@
-import Item from "../components/Item";
-import DashLayout from "../layouts/DashLayout";
-import ShopsCard from "../components/ShopsCard";
+import { Item } from "../components/Dashboard/Item";
+import { DashLayout } from "../layouts/DashLayout";
+import { ShopsCard } from "../components/ShopsCard";
 import circle from "../public/plus_circle.svg";
 import { ArrowLongRightIcon } from "@heroicons/react/20/solid";
 import { Fragment, useState, useEffect } from "react";
@@ -19,17 +19,22 @@ function Dashboard() {
 
   const [orders, setOrders] = useState(ordersApi);
   const [isOpen, setIsOpen] = useState(false);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     // ekzekutohet sa here qe orders ndryshon
     console.log(orders);
   }, [orders]);
 
-  const handleEdit = () => {
+  const handleEdit = (id) => {
     setIsOpen((oldModal) => !oldModal);
     // Ktu vondoe logjiken a artikullit te ri
     // shti produkt te ri
-    console.log();
+    // setShow(true);
+    setOrders(orders[id]);
+  };
+  const handleUpdate = () => {
+    setShow(false);
   };
 
   const handleDelete = (id) => {
@@ -73,13 +78,13 @@ function Dashboard() {
           </div> */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mx-auto max-w-full px-4 sm:px-6">
             {/* Permbajtja e faqes */}
-            {orders.map(({ id, text, price, address }, index) => (
+            {orders.map(({ id, text, price, address }) => (
               <Item
                 key={id}
                 text={text}
                 price={price}
                 address={address}
-                handleEdit={handleEdit}
+                handleEdit={() => handleEdit(id)}
                 handleDelete={() => handleDelete(id)}
               />
             ))}
@@ -155,18 +160,28 @@ function Dashboard() {
                           />
                         </div>
                         <div className="mt-4">
-                          <button
-                            type="button"
-                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed"
-                            onClick={() =>
-                              text && address && price ? addItem() : null
-                            }
-                            disabled={
-                              !text.length && !address.length && !price.length
-                            }
-                          >
-                            Нова достава
-                          </button>
+                          {!show ? (
+                            <button
+                              type="button"
+                              className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed"
+                              onClick={() =>
+                                text && address && price ? addItem() : null
+                              }
+                              disabled={
+                                !text.length && !address.length && !price.length
+                              }
+                            >
+                              Add
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed"
+                              onClick={handleUpdate}
+                            >
+                              Update
+                            </button>
+                          )}
                         </div>
                       </Dialog.Panel>
                     </Transition.Child>

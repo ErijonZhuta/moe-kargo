@@ -1,6 +1,6 @@
 import Image from "next/future/image";
 import Link from "next/link";
-function Header() {
+export const Header = () => {
   return (
     <div className="container flex flex-row lg:justify-between justify-between px-4 py-4 lg:items-center">
       <div className="cursor-pointer logo flex lg:space-x-5 items-center">
@@ -36,6 +36,4 @@ function Header() {
       </div>
     </div>
   );
-}
-
-export default Header;
+};

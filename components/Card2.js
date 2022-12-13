@@ -1,6 +1,6 @@
 import Image from "next/future/image";
 
-function Card2({ image, text, link }) {
+export const Card2 = ({ image, text, link }) => {
   return (
     <div className="flex flex-wrap gap-8 flex-col items-center justify-around">
       <div className="py-20 px-20 rounded-full bg-gray-200">
@@ -14,6 +14,4 @@ function Card2({ image, text, link }) {
       </a>
     </div>
   );
-}
-
-export default Card2;
+};

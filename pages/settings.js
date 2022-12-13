@@ -1,4 +1,4 @@
-import DashLayout from "../layouts/DashLayout";
+import {DashLayout} from "../layouts/DashLayout";
 
 function Settings() {
   return (

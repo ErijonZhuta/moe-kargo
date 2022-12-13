@@ -1,5 +1,5 @@
 import Link from "next/link";
-import DashLayout from "../layouts/DashLayout";
+import { DashLayout } from "../layouts/DashLayout";
 import qrcode from "../public/qrcode.svg";
 import Image from "next/future/image";
 
