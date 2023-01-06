@@ -1,10 +1,11 @@
-import { Item } from "../components/Dashboard/Item";
+import { Item } from "../components/dashboard/Item";
 import { DashLayout } from "../layouts/DashLayout";
 import { ShopsCard } from "../components/ShopsCard";
 import circle from "../public/plus_circle.svg";
 import { ArrowLongRightIcon } from "@heroicons/react/20/solid";
-import { Fragment, useState, useEffect } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { useState, useEffect } from "react";
+
+import { ProductModal } from "../components/dashboard/ProductModal";
 
 // kjo do veje pi API
 const ordersApi = [
@@ -16,6 +17,7 @@ function Dashboard() {
   const [text, setText] = useState("");
   const [address, setAddress] = useState("");
   const [price, setPrice] = useState("");
+  const [id, setId] = useState("");
 
   const [orders, setOrders] = useState(ordersApi);
   const [isOpen, setIsOpen] = useState(false);
@@ -23,18 +25,38 @@ function Dashboard() {
 
   useEffect(() => {
     // ekzekutohet sa here qe orders ndryshon
-    console.log(orders);
+    console.log({ orders });
   }, [orders]);
 
-  const handleEdit = (id) => {
-    setIsOpen((oldModal) => !oldModal);
-    // Ktu vondoe logjiken a artikullit te ri
-    // shti produkt te ri
+  const handleEdit = (idd) => {
+    setShow(true);
+    openModal();
+
+    const order = orders.find((order) => order.id === idd);
+    // const { id, text, address, price } = order;
+    setText(order.text);
+    setAddress(order.address);
+    setPrice(order.price);
+    setId(order.id);
+
     // setShow(true);
-    setOrders(orders[id]);
+    // setOrders(orders[id]);
   };
-  const handleUpdate = () => {
-    setShow(false);
+  const handleUpdate = (order) => {
+    console.log(id);
+    // setShow(true);
+    // const order = orders.((order) => order.id === id);
+    const updatedOrders = orders.map((ord) => {
+      if (ord.id === order.id) {
+        return order;
+      }
+
+      return ord;
+    });
+
+    setOrders(updatedOrders);
+
+    closeModal();
   };
 
   const handleDelete = (id) => {
@@ -45,28 +67,31 @@ function Dashboard() {
   };
 
   const onClickHandler = () => {
+    setShow(false);
     setIsOpen((oldModal) => !oldModal);
   };
 
-  function addItem() {
-    // Ktu vondoe logjiken a artikullit te ri
-    // shti produkt te ri
-    {
-      orders.push({ text: text, price: price, address: address });
-    }
+  function addItem(newItem) {
+    orders.push({
+      id: orders.at(-1).id + 1,
+      text: newItem.text,
+      price: newItem.price,
+      address: newItem.address,
+    });
+    closeModal();
+  }
+
+  const closeModal = () => {
     setIsOpen(false);
     setText("");
     setAddress("");
     setPrice("");
-  }
+    setId("");
+  };
 
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  function openModal() {
+  const openModal = () => {
     setIsOpen(true);
-  }
+  };
 
   return (
     <DashLayout>
@@ -78,9 +103,18 @@ function Dashboard() {
           </div> */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mx-auto max-w-full px-4 sm:px-6">
             {/* Permbajtja e faqes */}
-            {orders.map(({ id, text, price, address }) => (
+            <ShopsCard
+              text="Внеси нарачка "
+              image={circle}
+              height={50}
+              width={50}
+              onClickHandler={onClickHandler}
+              noButton={true}
+              noDelete={true}
+            />
+            {orders.map(({ id, text, price, address }, index) => (
               <Item
-                key={id}
+                key={`${id}${index}`}
                 text={text}
                 price={price}
                 address={address}
@@ -88,107 +122,19 @@ function Dashboard() {
                 handleDelete={() => handleDelete(id)}
               />
             ))}
-            <ShopsCard
-              text="Внеси нарачка "
-              image={circle}
-              height={50}
-              width={50}
-              onClickHandler={onClickHandler}
-            />
-            <Transition appear show={isOpen} as={Fragment}>
-              <Dialog as="div" className="relative z-10" onClose={closeModal}>
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <div className="fixed inset-0 bg-black bg-opacity-25" />
-                </Transition.Child>
-
-                <div className="fixed inset-0 overflow-y-auto">
-                  <div className="flex min-h-full items-center justify-center p-4 text-center">
-                    <Transition.Child
-                      as={Fragment}
-                      enter="ease-out duration-300"
-                      enterFrom="opacity-0 scale-95"
-                      enterTo="opacity-100 scale-100"
-                      leave="ease-in duration-200"
-                      leaveFrom="opacity-100 scale-100"
-                      leaveTo="opacity-0 scale-95"
-                    >
-                      <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                        <Dialog.Title
-                          as="h3"
-                          className="text-lg font-medium leading-6 text-gray-900"
-                        >
-                          Нова достава
-                        </Dialog.Title>
-                        <div className="flex flex-col mt-4 space-y-3">
-                          <input
-                            type="text"
-                            id="text"
-                            onChange={(e) => setText(e.target.value)}
-                            className=" bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                            placeholder="Текст"
-                            name="текст"
-                            required
-                            autoComplete="off"
-                          />
-                          <input
-                            type="text"
-                            id="address"
-                            onChange={(e) => setAddress(e.target.value)}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                            placeholder="Адреса"
-                            name="адреса"
-                            required
-                            autoComplete="off"
-                          />
-                          <input
-                            type="text"
-                            id="Цена"
-                            onChange={(e) => setPrice(e.target.value)}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                            placeholder="Цена"
-                            name="цена"
-                            required
-                            autoComplete="off"
-                          />
-                        </div>
-                        <div className="mt-4">
-                          {!show ? (
-                            <button
-                              type="button"
-                              className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed"
-                              onClick={() =>
-                                text && address && price ? addItem() : null
-                              }
-                              disabled={
-                                !text.length && !address.length && !price.length
-                              }
-                            >
-                              Add
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed"
-                              onClick={handleUpdate}
-                            >
-                              Update
-                            </button>
-                          )}
-                        </div>
-                      </Dialog.Panel>
-                    </Transition.Child>
-                  </div>
-                </div>
-              </Dialog>
-            </Transition>
+            {isOpen && (
+              <ProductModal
+                id={id}
+                text={text}
+                address={address}
+                price={price}
+                isOpen={isOpen}
+                closeModal={closeModal}
+                handleUpdate={handleUpdate}
+                addItem={addItem}
+                show={show}
+              />
+            )}
           </div>
           <div className="m-6 float-right bg-blue-600 rounded-md text-white p-3 inline space-x-1">
             <button className="inline">Кон достава</button>

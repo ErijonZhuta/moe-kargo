@@ -3,35 +3,35 @@ import { ShopsCard } from "../components/ShopsCard";
 import circle from "../public/plus_circle.svg";
 import logo from "../public/logo.svg";
 import { Fragment, useState, useEffect } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+
+import { ShopModal } from "../components/dashboard/ShopModal";
 
 const shopsApi = [
   {
-    text: "Посети Продавница",
+    id: 1,
+    text: "Zara",
     image: logo,
     height: 50,
     width: 50,
   },
   {
-    text: "Посети Продавница",
+    id: 2,
+    text: "Pull&Bear",
+    image: logo,
+    height: 50,
+    width: 50,
+  },
+  { id: 3, text: "Bershka", image: logo, height: 50, width: 50 },
+  {
+    id: 4,
+    text: "Nike",
     image: logo,
     height: 50,
     width: 50,
   },
   {
-    text: "Посети Продавница",
-    image: logo,
-    height: 50,
-    width: 50,
-  },
-  {
-    text: "Посети Продавница",
-    image: logo,
-    height: 50,
-    width: 50,
-  },
-  {
-    text: "Посети Продавница",
+    id: 5,
+    text: "Adidas",
     image: logo,
     height: 50,
     width: 50,
@@ -41,35 +41,56 @@ const shopsApi = [
 function Shops() {
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
+  const [id, setId] = useState("");
 
   const [shops, setShops] = useState(shopsApi);
   const [isOpen, setIsOpen] = useState(false);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     // ekzekutohet sa here qe orders ndryshon
     console.log(shops);
   }, [shops]);
 
+  useEffect(() => {
+    console.log(isOpen);
+  }, [isOpen]);
+
   const onClickHandler = () => {
-    setIsOpen((oldModal) => !oldModal);
+    setIsOpen(true);
+  };
+  const closeModal = () => {
+    setIsOpen(false);
+    setText("");
+    setImage("");
+    setId("");
   };
 
-  function addItem() {
-    // Ktu vondoe logjiken a artikullit te ri
-    // shti produkt te ri
-    {
-      shops.push({ text: text, image: image });
-    }
-    setIsOpen(false);
+  function addItem(newItem) {
+    shops.push({
+      id: shops.at(-1) ? shops.at(-1).id + 1 : 1,
+      text: newItem.text,
+      image: newItem.image,
+    });
+    closeModal();
   }
 
-  function closeModal() {
-    setIsOpen(false);
-  }
+  const handleDelete = (id) => {
+    setShops(shops.filter((shop) => shop.id != id));
+  };
 
-  function openModal() {
+  const handleEdit = (idd) => {
+    openModal();
+
+    const shop = shops.find((shop) => shop.id === idd);
+    setText(shop.text);
+    setImage(shop.image);
+    setId(shop.id);
+  };
+
+  const openModal = () => {
     setIsOpen(true);
-  }
+  };
   return (
     <DashLayout>
       <main className="flex-1 bg-gradient-to-l to-gray-100 from-purple-100 min-h-screen">
@@ -83,95 +104,32 @@ function Shops() {
             <ShopsCard
               text="Додај Нова Продавница"
               image={circle}
-              height={50}
-              width={50}
+              // height={50}
+              // width={50}
               onClickHandler={onClickHandler}
+              noButton={true}
+              noDelete={true}
             />
-            {shopsApi.map(({ text, image, height, width }, index) => (
+            {shops.map(({ text, image, id, height, width }, index) => (
               <ShopsCard
-                key={index}
+                key={`${id}${index}`}
                 text={text}
                 image={image}
-                height={height}
-                width={width}
+                id={id}
+                handleEdit={() => handleEdit(id)}
+                handleDelete={() => handleDelete(id)}
+                // height={height}
+                // width={width}
               />
             ))}
-            <Transition appear show={isOpen} as={Fragment}>
-              <Dialog as="div" className="relative z-10" onClose={closeModal}>
-                <Transition.Child
-                  as={Fragment}
-                  enter="ease-out duration-300"
-                  enterFrom="opacity-0"
-                  enterTo="opacity-100"
-                  leave="ease-in duration-200"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
-                >
-                  <div className="fixed inset-0 bg-black bg-opacity-25" />
-                </Transition.Child>
-
-                <div className="fixed inset-0 overflow-y-auto">
-                  <div className="flex min-h-full items-center justify-center p-4 text-center">
-                    <Transition.Child
-                      as={Fragment}
-                      enter="ease-out duration-300"
-                      enterFrom="opacity-0 scale-95"
-                      enterTo="opacity-100 scale-100"
-                      leave="ease-in duration-200"
-                      leaveFrom="opacity-100 scale-100"
-                      leaveTo="opacity-0 scale-95"
-                    >
-                      <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                        <Dialog.Title
-                          as="h3"
-                          className="text-lg font-medium leading-6 text-gray-900"
-                        >
-                          Нова достава
-                        </Dialog.Title>
-                        <div className="flex flex-col mt-4">
-                          {/* <input
-                            type="text"
-                            id="text"
-                            onChange={(e) => setText(e.target.value)}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                            placeholder="текст"
-                            name="текст"
-                            required
-                          />
-                          <input
-                            type="text"
-                            id="address"
-                            onChange={(e) => setAddress(e.target.value)}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                            placeholder="адреса"
-                            name="адреса"
-                            required
-                          />
-                          <input
-                            type="text"
-                            id="цена"
-                            onChange={(e) => setPrice(e.target.value)}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                            placeholder="цена"
-                            name="цена"
-                            required
-                          /> */}
-                        </div>
-                        <div className="mt-4">
-                          <button
-                            type="button"
-                            className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                            onClick={addItem}
-                          >
-                            Нова достава
-                          </button>
-                        </div>
-                      </Dialog.Panel>
-                    </Transition.Child>
-                  </div>
-                </div>
-              </Dialog>
-            </Transition>
+            <ShopModal
+              id={id}
+              text={text}
+              image={image}
+              closeModal={closeModal}
+              isOpen={isOpen}
+              addItem={addItem}
+            />
           </div>
           {/* </div> */}
         </div>

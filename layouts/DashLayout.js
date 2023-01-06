@@ -274,7 +274,7 @@ export const DashLayout = ({ children }) => {
       <div className="flex flex-1 flex-col md:pl-64">
         <div className="flex items-center justify-between flex-shrink-0 bg-gradient-to-r from-purple-500 to-blue-400 shadow px-8 py-12">
           <div className="space-y-3 text-white">
-            <p className="text-5xl">Здраво Тереза</p>
+            <p className="text-5xl">Naqetaaa</p>
             <p className="text-xl">Твои Зачувани Продавници</p>
           </div>
           <div className="flex flex-shrink justify-between px-4">
