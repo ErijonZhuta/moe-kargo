@@ -1,26 +1,23 @@
+import axios from "axios";
 import React, { useState } from "react";
 
-function Register() {
+ const Register = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const [tel, setTel] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    // console.log(e.target.value);
-    if (id === "fullName") {
-      setFullName(value);
+  
+  const handleInputChange = () => {
+    console.log(fullName);
+    const params = {
+      fullName: fullName,
+      email: email,
+      password: password
     }
-    if (id === "email") {
-      setEmail(value);
-    }
-    if (id === "tel") {
-      setTel(value);
-    }
-    if (id === "pass") {
-      setPass(value);
-    }
+    axios.post('http://localhost:5000/moe-kargo/register',params)
+    .then((response)=>{
+      console.log(response)
+    })
   };
 
   return (
@@ -38,7 +35,6 @@ function Register() {
         </div>
         <div
           className="flex flex-col p-24 gap-6 bg-blue-200 rounded-lg"
-          onSubmit={handleInputChange}
         >
           <div className="text-white text-5xl font-semibold">
             Креирај Профил
@@ -46,8 +42,9 @@ function Register() {
           <input
             type="text"
             id="fullName"
+            autoComplete="off"
             value={fullName}
-            onChange={(e) => handleInputChange(e)}
+            onChange={(e) => setFullName(e.target.value)}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
             placeholder="Име и Презиме"
             name="name"
@@ -57,27 +54,17 @@ function Register() {
             type="email"
             id="email"
             value={email}
-            onChange={(e) => handleInputChange(e)}
+            onChange={(e) => setEmail(e.target.value)}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
             placeholder="Емаил"
             name="email"
             required
           />
           <input
-            type="tel"
-            id="tel"
-            value={tel}
-            onChange={(e) => handleInputChange(e)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-            placeholder="Телефон"
-            name="tel"
-            required
-          />
-          <input
             type="password"
-            id="pass"
-            value={pass}
-            onChange={(e) => handleInputChange(e)}
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
             placeholder="Лозинка"
             name="password"
@@ -85,7 +72,7 @@ function Register() {
           />
           <button
             type="submit"
-            onSubmit={handleInputChange}
+            onClick={handleInputChange}
             className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-md"
           >
             Најави се
