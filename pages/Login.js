@@ -1,12 +1,20 @@
+import axios from "axios";
 import React, { useState } from "react";
 
 function Login() {
   const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     console.log(email);
+    const params = {
+      email: email,
+      password: password
+    }
+    axios.post('http://localhost:5000/moe-kargo/register',params)
+    .then((response)=>{
+      console.log(response)
+    })
   };
   return (
     <div className="py-20">
@@ -24,8 +32,8 @@ function Login() {
           />
           <input
             type="password"
-            value={pass}
-            onChange={(e) => setPass(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
             placeholder="Лозинка"
             name="password"
@@ -33,6 +41,7 @@ function Login() {
           />
           <button
             type="submit"
+            onClick={handleSubmit}
             className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-md"
           >
             Логирај се
