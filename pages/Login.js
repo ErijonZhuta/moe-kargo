@@ -48,7 +48,7 @@ function Login() {
           </button>
           <div className="flex justify-evenly">
             <a
-              href="#"
+              href="http://localhost:5000/moe-kargo/auth/facebook"
               className="flex items-center justify-center w-full px-4 py-2 mt-2 space-x-3 text-md text-center bg-blue-500 text-white transition-colors duration-200 transform border rounded-lg dark:text-gray-300 dark:border-gray-300 hover:bg-blue-600"
             >
               <svg
@@ -66,7 +66,7 @@ function Login() {
               </span>
             </a>
             <a
-              href="#"
+              href="http://localhost:5000/moe-kargo/auth/google"
               className="flex items-center justify-center w-full px-4 py-2 mt-2 space-x-3 text-md text-center bg-red-500 text-white transition-colors duration-200 transform border rounded-lg dark:text-gray-300 dark:border-gray-300 hover:bg-red-600"
             >
               <svg
