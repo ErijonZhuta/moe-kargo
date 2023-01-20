@@ -52,15 +52,24 @@ function Shops() {
     console.log(shops);
   }, [shops]);
 
+  const handleEdit = (id) => {
+    setShow(true);
+    setIsOpen(true);
+
+    const shop = shops.find((shop) => shop.id === id);
+    setImage(shop.image);
+    setText(shop.text);
+    setId(shop.id);
+
+  };
+
   useEffect(() => {
     console.log(isOpen);
   }, [isOpen]);
 
   const onClickHandler = () => {
+    setShow(false);
     setIsOpen(true);
-  };
-  const closeModal = () => {
-    setIsOpen(false);
     setText("");
     setImage("");
     setId("");
@@ -75,22 +84,17 @@ function Shops() {
     closeModal();
   }
 
+  const closeModal = () => {
+    setIsOpen(false);
+    setText("");
+    setImage("");
+    setId("");
+  };
+
   const handleDelete = (id) => {
     setShops(shops.filter((shop) => shop.id != id));
   };
 
-  const handleEdit = (idd) => {
-    openModal();
-
-    const shop = shops.find((shop) => shop.id === idd);
-    setText(shop.text);
-    setImage(shop.image);
-    setId(shop.id);
-  };
-
-  const openModal = () => {
-    setIsOpen(true);
-  };
   return (
     <DashLayout>
       <main className="flex-1 bg-gradient-to-l to-gray-100 from-purple-100 min-h-screen">
@@ -129,6 +133,7 @@ function Shops() {
               closeModal={closeModal}
               isOpen={isOpen}
               addItem={addItem}
+              show={show}
             />
           </div>
           {/* </div> */}

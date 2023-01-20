@@ -8,17 +8,28 @@ export const ShopModal = ({
   isOpen: isModalOpen,
   addItem,
   closeModal,
-}) => {
-  const [text, setText] = useState("");
-  const [image, setImage] = useState("");
-  const [id, setId] = useState(itemId);
+  show: Show,
 
+}) => {
+  const [id, setId] = useState(itemId);
+  const [text, setText] = useState(itemText);
+  const [image, setImage] = useState(itemImage);
+
+  const [show, setShow] = useState(Show);
   const [isOpen, setIsOpen] = useState(isModalOpen);
 
   //   const [shops, setShops] = useState(shopsApi);
   useEffect(() => {
     setIsOpen(isModalOpen);
   }, [isModalOpen]);
+
+  useEffect(() => {
+    setImage(itemImage)
+  }, [itemImage])
+
+  useEffect(() => {
+    setText(itemText)
+  }, [itemText])
 
   const onClose = () => {
     setImage("");
@@ -89,14 +100,26 @@ export const ShopModal = ({
                     autoComplete="off"
                     value={text}
                   />
-                  <button
+                  <div className="mt-4">
+                  {!show ? (
+                    <button
                     type="button"
                     className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                     onClick={handleAdd}
                     disabled={!text.length && !image.length}
-                  >
-                    Add
-                  </button>
+                    >
+                      Add
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed"
+                      onClick={() => handleUpdate({ id, text, image})}
+                    >
+                      Update
+                    </button>
+                  )}
+                </div>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

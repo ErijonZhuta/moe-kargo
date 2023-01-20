@@ -1,12 +1,17 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
+
+
  const Register = () => {
+ 
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  
+  const router=useRouter()
   const handleInputChange = () => {
     console.log(fullName);
     const params = {
@@ -17,10 +22,15 @@ import React, { useState } from "react";
     axios.post('http://localhost:5000/moe-kargo/register',params)
     .then((response)=>{
       console.log(response)
+      router.push('login');
+      
+    }).catch(function(error){
+      console.log(error)
     })
   };
 
   return (
+    
     <div className="py-20">
       <div className="grid py-24 grid-cols-2 bg-gradient-to-r from-violet-400 to-blue-600 container items-center justify-items-center">
         <div className="flex flex-col gap-4 p-24">
@@ -118,6 +128,7 @@ import React, { useState } from "react";
         </div>
       </div>
     </div>
+    
   );
 }
 export default Register;

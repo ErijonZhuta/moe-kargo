@@ -13,6 +13,8 @@ import {
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import Image from "next/future/image";
+import { useRouter } from "next/router";
+
 
 const nav1 = [
   {
@@ -51,13 +53,19 @@ const nav2 = [
   },
 ];
 
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export const DashLayout = ({ children }) => {
+  const router= useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+  }
   return (
     <div>
       <Transition.Root show={sidebarOpen} as={Fragment}>
@@ -300,6 +308,7 @@ export const DashLayout = ({ children }) => {
                   />
                 </div>
               </form>
+          <button onClick={handleLogout} id="logout-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded">Logout</button>
             </div>
           </div>
           <button

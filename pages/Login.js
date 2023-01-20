@@ -1,21 +1,38 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage,setErrorMessage]=useState("");
+  const router= useRouter()
 
-  const handleSubmit = () => {
-    console.log(email);
-    const params = {
-      email: email,
-      password: password
+  // const clearErrorMessage = () => {
+  //   setErrorMessage("");
+  // }
+  const handleSubmit = async () => {
+    try {
+        const params = {
+            email: email,
+            password: password
+        }
+        const response = await axios.post('http://localhost:5000/moe-kargo/login',params);
+        if (response.status === 200) {
+            localStorage.setItem("token", response.data.token);
+            router.push("/dashboard");
+        } else {
+            // handle error
+            console.log(response.data.message);
+            setErrorMessage("error");
+            console.log("errr")
+        }
+    } catch (error) {
+        // handle error
+        console.log(error)
+        console.log("error")
     }
-    axios.post('http://localhost:5000/moe-kargo/register',params)
-    .then((response)=>{
-      console.log(response)
-    })
-  };
+};
   return (
     <div className="py-20">
       <div className="grid py-24 bg-gradient-to-r from-violet-400 to-blue-600 container items-center justify-items-center">
@@ -24,7 +41,8 @@ function Login() {
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)
+            }
             className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
             placeholder="Емаил"
             name="email"
@@ -33,7 +51,8 @@ function Login() {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)
+            }
             className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
             placeholder="Лозинка"
             name="password"
@@ -46,6 +65,7 @@ function Login() {
           >
             Логирај се
           </button>
+          <p className="text-red-500">{errorMessage}</p>
           <div className="flex justify-evenly">
             <a
               href="http://localhost:5000/moe-kargo/auth/facebook"
