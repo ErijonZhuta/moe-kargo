@@ -42,16 +42,20 @@ function Shops() {
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
   const [id, setId] = useState("");
-
+  
   const [shops, setShops] = useState(shopsApi);
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
-
+  
   useEffect(() => {
     // ekzekutohet sa here qe orders ndryshon
     console.log(shops);
   }, [shops]);
-
+  
+  useEffect(() => {
+    console.log(isOpen);
+  }, [isOpen]);
+  
   const handleEdit = (id) => {
     setShow(true);
     setIsOpen(true);
@@ -62,10 +66,20 @@ function Shops() {
     setId(shop.id);
 
   };
+  const handleUpdate = (shop) => {
+    console.log(id)
 
-  useEffect(() => {
-    console.log(isOpen);
-  }, [isOpen]);
+    const updatedShops = shops.map((shopp) => {
+      if (shopp.id === shop.id) {
+        return shop; 
+      }
+      return shopp;
+      
+    });
+      setShops(updatedShops);
+      closeModal();
+    };
+
 
   const onClickHandler = () => {
     setShow(false);
@@ -134,6 +148,7 @@ function Shops() {
               isOpen={isOpen}
               addItem={addItem}
               show={show}
+              handleUpdate={handleUpdate}
             />
           </div>
           {/* </div> */}

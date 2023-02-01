@@ -1,71 +1,70 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage,setErrorMessage]=useState("");
-  const router= useRouter()
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
 
-  // const clearErrorMessage = () => {
-  //   setErrorMessage("");
-  // }
-  const handleSubmit = async () => {
+  useEffect(() => {
+    console.log("errorMessage:", errorMessage);
+    setErrorMessage(errorMessage);
+  }, [errorMessage]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
     try {
-        const params = {
-            email: email,
-            password: password
-        }
-        const response = await axios.post('http://localhost:5000/moe-kargo/login',params);
-        if (response.status === 200) {
-            localStorage.setItem("token", response.data.token);
-            router.push("/dashboard");
-        } else {
-            // handle error
-            console.log(response.data.message);
-            setErrorMessage("error");
-            console.log("errr")
-        }
+      const params = {
+        email: email,
+        password: password,
+      };
+
+      const response = await axios.post(
+        "http://localhost:5000/moe-kargo/login",
+        params
+      );
+
+      localStorage.setItem("token", response.data.token);
+      router.push("/dashboard");
     } catch (error) {
-        // handle error
-        console.log(error)
-        console.log("error")
+      setErrorMessage(error.response.data);
     }
-};
+  };
   return (
     <div className="py-20">
       <div className="grid py-24 bg-gradient-to-r from-violet-400 to-blue-600 container items-center justify-items-center">
         <div className="flex flex-col p-24 gap-6 bg-blue-200 rounded-lg">
           <div className="text-white text-5xl font-semibold">Логирај се</div>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)
-            }
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-            placeholder="Емаил"
-            name="email"
-            required
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)
-            }
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-            placeholder="Лозинка"
-            name="password"
-            required
-          />
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-md"
-          >
-            Логирај се
-          </button>
-          <p className="text-red-500">{errorMessage}</p>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              placeholder="Емаил"
+              name="email"
+              required
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              placeholder="Лозинка"
+              name="password"
+              required
+            />
+            <p className="text-red-500">{errorMessage}</p>
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-md"
+            >
+              Логирај се
+            </button>
+          </form>
           <div className="flex justify-evenly">
             <a
               href="http://localhost:5000/moe-kargo/auth/facebook"

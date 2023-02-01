@@ -4,14 +4,9 @@ import { ShopsCard } from "../components/ShopsCard";
 import circle from "../public/plus_circle.svg";
 import { ArrowLongRightIcon } from "@heroicons/react/20/solid";
 import { useState, useEffect } from "react";
-
 import { ProductModal } from "../components/dashboard/ProductModal";
-
-// kjo do veje pi API
-const ordersApi = [
-  { id: 1, text: "Cacatua-Urban Look", price: "900 ден.", address: "Битола" },
-  { id: 2, text: "MyModa.mk", price: "400 ден.", address: "Скопје" },
-];
+import api from "../lib/api";
+import axios from "axios";
 
 function Dashboard() {
   const [text, setText] = useState("");
@@ -19,51 +14,81 @@ function Dashboard() {
   const [price, setPrice] = useState("");
   const [id, setId] = useState("");
 
-  const [orders, setOrders] = useState(ordersApi);
+  const [orders, setOrders] = useState([]);
+  const [updatedOrders, setUpdatedOrders] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    // ti lexojm pe ne api
+    getData();
+  }, []);
+
+  const getData = () => {
+    api.get("/products").then((res) => {
+      console.log(res);
+      setOrders(res.data);
+    });
+  };
 
   useEffect(() => {
     // ekzekutohet sa here qe orders ndryshon
     console.log({ orders });
   }, [orders]);
 
+  useEffect(() => {
+    setOrders(updatedOrders);
+  }, [updatedOrders]);
+
   const handleEdit = (idd) => {
     setShow(true);
     openModal();
 
     const order = orders.find((order) => order.id === idd);
-    // const { id, text, address, price } = order;
-    setText(order.text);
-    setAddress(order.address);
+
+    setText(order.name);
+    setAddress(order.description);
     setPrice(order.price);
     setId(order.id);
-
-    // setShow(true);
-    // setOrders(orders[id]);
   };
   const handleUpdate = (order) => {
-    console.log(id);
-    // setShow(true);
-    // const order = orders.((order) => order.id === id);
-    const updatedOrders = orders.map((ord) => {
-      if (ord.id === order.id) {
-        return order;
-      }
-
-      return ord;
-    });
-
-    setOrders(updatedOrders);
-
-    closeModal();
+    const token = localStorage.getItem("token");
+    api
+      .put(
+        `/addProduct${id}`,
+        {
+          name: order.text,
+          description: order.address,
+          price: order.price,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        getData();
+        closeModal();
+      })
+      .catch((error) => console.error(error));
   };
 
   const handleDelete = (id) => {
     // Ktu vondoe logjiken a artikullit te ri
-    // shti produkt te ri
-    setOrders(orders.filter((order) => order.id != id));
-    // setIsOpen(true);
+    // console.log({ token: localStorage.getItem("token") });
+    const token = localStorage.getItem("token");
+    console.log("TOKEN: ", token);
+    api
+      .delete(`/deleteProduct${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setOrders(orders.filter((order) => order.id != id));
+      })
+      .catch((error) => console.error(error));
   };
 
   const onClickHandler = () => {
@@ -71,15 +96,33 @@ function Dashboard() {
     setIsOpen((oldModal) => !oldModal);
   };
 
-  function addItem(newItem) {
-    orders.push({
-      id: orders.at(-1).id + 1,
-      text: newItem.text,
-      price: newItem.price,
-      address: newItem.address,
-    });
-    closeModal();
-  }
+  const addItem = (newItem) => {
+    const token = localStorage.getItem("token");
+    api
+      .post(
+        "/addProduct",
+        {
+          name: newItem.text,
+          description: newItem.address,
+          price: newItem.price,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        orders.push({
+          id: orders.at(-1) ? orders.at(-1).id + 1 : 1,
+          name: newItem.text,
+          description: newItem.address,
+          price: newItem.price,
+        });
+        closeModal();
+      })
+      .catch((error) => console.error(error));
+  };
 
   const closeModal = () => {
     setIsOpen(false);
@@ -112,12 +155,12 @@ function Dashboard() {
               noButton={true}
               noDelete={true}
             />
-            {orders.map(({ id, text, price, address }, index) => (
+            {orders.map(({ id, name, price, description }, index) => (
               <Item
                 key={`${id}${index}`}
-                text={text}
+                text={name}
+                address={description}
                 price={price}
-                address={address}
                 handleEdit={() => handleEdit(id)}
                 handleDelete={() => handleDelete(id)}
               />

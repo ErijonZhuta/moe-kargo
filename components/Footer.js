@@ -104,7 +104,7 @@ export const Footer = () => {
                     width="32"
                     height="32"
                     fill="currentColor"
-                    class="bi bi-apple"
+                    className="bi bi-apple"
                     viewBox="0 0 16 16"
                   >
                     {" "}
@@ -213,12 +213,12 @@ export const Footer = () => {
                         <path
                           id="path50"
                           d="M.55 30A2.43 2.43 0 010 28.32v.17a2.41 2.41 0 00.55 1.67l.09-.09z"
-                          class="cls-7"
+                          className="cls-7"
                         />
                         <path
                           id="path52"
                           d="M26.25 16.86l-5.94 3.38.11.11L26.25 17a2.11 2.11 0 001.25-1.72 2.21 2.21 0 01-1.25 1.58z"
-                          class="cls-7"
+                          className="cls-7"
                         />
                         <path
                           id="path54"

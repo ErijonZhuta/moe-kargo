@@ -1,36 +1,41 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-
-
- const Register = () => {
- 
-
+const Register = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const router = useRouter();
 
-  const router=useRouter()
-  const handleInputChange = () => {
-    console.log(fullName);
-    const params = {
-      fullName: fullName,
-      email: email,
-      password: password
+  useEffect(() => {
+    console.log("errorMessage:", errorMessage);
+    setErrorMessage(errorMessage);
+  }, [errorMessage]);
+
+  const handleInputChange = async (event) => {
+    event.preventDefault();
+    // console.log(fullName);
+    try {
+      const params = {
+        fullName: fullName,
+        email: email,
+        password: password,
+      };
+
+      const response = await axios.post(
+        "http://localhost:5000/moe-kargo/register",
+        params
+      );
+      console.log(response);
+      router.push("/login");
+    } catch (error) {
+      setErrorMessage(error.response.data.message);
     }
-    axios.post('http://localhost:5000/moe-kargo/register',params)
-    .then((response)=>{
-      console.log(response)
-      router.push('login');
-      
-    }).catch(function(error){
-      console.log(error)
-    })
   };
 
   return (
-    
     <div className="py-20">
       <div className="grid py-24 grid-cols-2 bg-gradient-to-r from-violet-400 to-blue-600 container items-center justify-items-center">
         <div className="flex flex-col gap-4 p-24">
@@ -43,50 +48,50 @@ import React, { useState } from "react";
             максимално <strong>10 нарачки.</strong>
           </p>
         </div>
-        <div
-          className="flex flex-col p-24 gap-6 bg-blue-200 rounded-lg"
-        >
+        <div className="flex flex-col p-24 gap-6 bg-blue-200 rounded-lg">
           <div className="text-white text-5xl font-semibold">
             Креирај Профил
           </div>
-          <input
-            type="text"
-            id="fullName"
-            autoComplete="off"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-            placeholder="Име и Презиме"
-            name="name"
-            required
-          />
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-            placeholder="Емаил"
-            name="email"
-            required
-          />
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-            placeholder="Лозинка"
-            name="password"
-            required
-          />
-          <button
-            type="submit"
-            onClick={handleInputChange}
-            className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-md"
-          >
-            Најави се
-          </button>
+          <form onSubmit={handleInputChange}>
+            <input
+              type="text"
+              id="fullName"
+              autoComplete="off"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              placeholder="Име и Презиме"
+              name="name"
+              required
+            />
+            <input
+              type="text"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              placeholder="Емаил"
+              name="email"
+              required
+            />
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              placeholder="Лозинка"
+              name="password"
+              required
+            />
+            <p className="text-red-500">{errorMessage}</p>
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-md"
+            >
+              Најави се
+            </button>
+          </form>
           <div className="flex justify-evenly">
             <a
               href="http://localhost:5000/moe-kargo/auth/facebook"
@@ -128,7 +133,6 @@ import React, { useState } from "react";
         </div>
       </div>
     </div>
-    
   );
-}
+};
 export default Register;
