@@ -1,9 +1,28 @@
-import Link from "next/link";
 import { DashLayout } from "../layouts/DashLayout";
-import qrcode from "../public/qrcode.svg";
-import Image from "next/future/image";
+import QRCode from "react-qr-code";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import api from "../lib/api";
 
 function Cargo() {
+  // const [data, setData] = useState([]);
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    // ti lexojm pe ne api
+    getData();
+  }, []);
+  useEffect(() => {
+    // ekzekutohet sa here qe orders ndryshon
+    console.log({ orders });
+  }, [orders]);
+  const getData = () => {
+    api.get("/products").then((res) => {
+      console.log(res);
+      setOrders(res.data);
+    });
+  };
+
   return (
     <DashLayout>
       <main className="flex-1 bg-gradient-to-l to-gray-100 from-purple-100 min-h-screen">
@@ -26,16 +45,8 @@ function Cargo() {
                     <p>078366708</p>
                   </div>
                 </div>
-                <div>
-                  <Image
-                    className=""
-                    src={qrcode}
-                    alt=""
-                    // width={500} automatically provided
-                    // height={500} automatically provided
-                    // blurDataURL="data:..." automatically provided
-                    // placeholder="blur" // Optional blur-up while loading
-                  />
+                <div class="w-50 h-50">
+                  <QRCode value="hoyo.tech" />
                 </div>
               </div>
             </div>
@@ -53,7 +64,17 @@ function Cargo() {
             </button>
           </div>
         </div>
-        <div>Tabela</div>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Column 1</th>
+                <th>Column 2</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </main>
     </DashLayout>
   );

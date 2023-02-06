@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   AdjustmentsHorizontalIcon,
@@ -12,7 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
-import Image from "next/future/image";
+import Image from "next/image";
 import { useRouter } from "next/router";
 
 const nav1 = [
@@ -56,7 +56,8 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export const DashLayout = ({ children }) => {
+export const DashLayout = (props) => {
+  console.log("PROPS:", props);
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -64,6 +65,7 @@ export const DashLayout = ({ children }) => {
     localStorage.removeItem("token");
     router.push("/login");
   };
+
   return (
     <div>
       <Transition.Root show={sidebarOpen} as={Fragment}>
@@ -225,7 +227,7 @@ export const DashLayout = ({ children }) => {
                   className={classNames(
                     item.current
                       ? "bg-gray-100 text-gray-900"
-                      : "text-red-600 hover:bg-gray-50 hover:text-gray-900",
+                      : "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
                     "group flex items-center px-2 py-2 text-sm font-medium rounded-md",
                     "cursor-pointer"
                   )}
@@ -325,8 +327,16 @@ export const DashLayout = ({ children }) => {
           </button>
         </div>
 
-        {children}
+        {props.children}
       </div>
     </div>
   );
+};
+
+const getServerSideProps = async (context) => {
+  const cookies = context.req.headers.cookie;
+
+  return {
+    props: { cookies },
+  };
 };

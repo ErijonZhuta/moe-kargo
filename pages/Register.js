@@ -16,7 +16,6 @@ const Register = () => {
 
   const handleInputChange = async (event) => {
     event.preventDefault();
-    // console.log(fullName);
     try {
       const params = {
         fullName: fullName,

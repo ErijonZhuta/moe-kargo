@@ -6,7 +6,6 @@ import { ArrowLongRightIcon } from "@heroicons/react/20/solid";
 import { useState, useEffect } from "react";
 import { ProductModal } from "../components/dashboard/ProductModal";
 import api from "../lib/api";
-import axios from "axios";
 
 function Dashboard() {
   const [text, setText] = useState("");
@@ -22,6 +21,8 @@ function Dashboard() {
   useEffect(() => {
     // ti lexojm pe ne api
     getData();
+    getUser();
+    console.log(getUser);
   }, []);
 
   const getData = () => {
@@ -29,6 +30,23 @@ function Dashboard() {
       console.log(res);
       setOrders(res.data);
     });
+  };
+
+  const getUser = () => {
+    const token = localStorage.getItem("token");
+    api
+      .post(
+        "/me",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+      });
   };
 
   useEffect(() => {
@@ -76,9 +94,7 @@ function Dashboard() {
 
   const handleDelete = (id) => {
     // Ktu vondoe logjiken a artikullit te ri
-    // console.log({ token: localStorage.getItem("token") });
     const token = localStorage.getItem("token");
-    console.log("TOKEN: ", token);
     api
       .delete(`/deleteProduct${id}`, {
         headers: {
@@ -155,16 +171,18 @@ function Dashboard() {
               noButton={true}
               noDelete={true}
             />
-            {orders.map(({ id, name, price, description }, index) => (
-              <Item
-                key={`${id}${index}`}
-                text={name}
-                address={description}
-                price={price}
-                handleEdit={() => handleEdit(id)}
-                handleDelete={() => handleDelete(id)}
-              />
-            ))}
+            {(orders.length ? orders : []).map(
+              ({ id, name, price, description }, index) => (
+                <Item
+                  key={`${id}${index}`}
+                  text={name}
+                  address={description}
+                  price={price}
+                  handleEdit={() => handleEdit(id)}
+                  handleDelete={() => handleDelete(id)}
+                />
+              )
+            )}
             {isOpen && (
               <ProductModal
                 id={id}
