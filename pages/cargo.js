@@ -1,24 +1,29 @@
 import { DashLayout } from "../layouts/DashLayout";
-import QRCode from "react-qr-code";
-import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import api from "../lib/api";
+import QRCode from "react-qr-code";
+import { UserContext } from "../context/UserContext";
 
 function Cargo() {
-  // const [data, setData] = useState([]);
   const [orders, setOrders] = useState([]);
-
+  const [user, setUser] = useContext(UserContext);
   useEffect(() => {
     // ti lexojm pe ne api
     getData();
   }, []);
+
+  useEffect(() => {
+    // ekzekutohet sa here qe orders ndryshon
+    console.log({ orders });
+  }, [orders]);
+
   useEffect(() => {
     // ekzekutohet sa here qe orders ndryshon
     console.log({ orders });
   }, [orders]);
   const getData = () => {
     api.get("/products").then((res) => {
-      console.log(res);
+      console.log(res.data);
       setOrders(res.data);
     });
   };
@@ -31,9 +36,9 @@ function Cargo() {
             <div className="col-span-2 p-6">
               <div className="col-span-2 border-dashed border-2 p-3">
                 <div className="flex flex-col">
-                  <h1 className="text-2xl font-bold">Тереза Лозановска</h1>
+                  <h1 className="text-2xl font-bold">{user?.fullName}</h1>
                   <div className="flex justify-between">
-                    <p>Адреса:</p>
+                    <p>Адреса: {user?.address}</p>
                     <p>ул.Црвена Вода бр.6</p>
                   </div>
                   <div className="flex justify-between">
@@ -45,17 +50,20 @@ function Cargo() {
                     <p>078366708</p>
                   </div>
                 </div>
-                <div class="w-50 h-50">
-                  <QRCode value="hoyo.tech" />
+                <div>
+                  <QRCode className="w-[20%] h-[20%]" value="hoyo.tech" />
                 </div>
               </div>
             </div>
             <div className="flex flex-col py-4 ">
-              <h3 className="text-blue-600 font-semibold pb-2">Продавници: </h3>
-              <p>Cacatua-Urban Look</p>
-              <li className="pb-3">Битола</li>
-              <p>MyModa.mk</p>
-              <li>Скопје</li>
+              <h3 className="text-blue-600 font-semibold pb-2">Продавници:</h3>
+              {orders &&
+                orders.map((order, index) => (
+                  <div key={index}>
+                    <p>{order.name}</p>
+                    <li>{order.description}</li>
+                  </div>
+                ))}
             </div>
           </div>
           <div className="col-span-4">
@@ -63,17 +71,6 @@ function Cargo() {
               Следи достава
             </button>
           </div>
-        </div>
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <th>Column 1</th>
-                <th>Column 2</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
         </div>
       </main>
     </DashLayout>

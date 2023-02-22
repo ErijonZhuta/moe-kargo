@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
+import { getUser } from "../lib/user";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -9,7 +10,18 @@ function Login() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("errorMessage:", errorMessage);
+    const fetchUser = async () => {
+      try {
+        await getUser();
+        router.push("/dashboard");
+      } catch (error) {}
+    };
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    // console.log("errorMessage:", errorMessage);
     setErrorMessage(errorMessage);
   }, [errorMessage]);
 
@@ -43,7 +55,7 @@ function Login() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3 mb-2"
               placeholder="Емаил"
               name="email"
               required
@@ -51,8 +63,9 @@ function Login() {
             <input
               type="password"
               value={password}
+              autoComplete="off"
               onChange={(e) => setPassword(e.target.value)}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3 mb-2"
               placeholder="Лозинка"
               name="password"
               required
@@ -65,6 +78,11 @@ function Login() {
               Логирај се
             </button>
           </form>
+          <div>
+            <a href="http://localhost:3000/Register">
+              New user?<b>Sign Up</b>
+            </a>
+          </div>
           <div className="flex justify-evenly">
             <a
               href="http://localhost:5000/moe-kargo/auth/facebook"

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
+import { getUser } from "../lib/user";
 
 const Register = () => {
   const [fullName, setFullName] = useState("");
@@ -8,6 +9,17 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        await getUser();
+        router.push("/dashboard");
+      } catch (error) {}
+    };
+
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     console.log("errorMessage:", errorMessage);
@@ -51,14 +63,14 @@ const Register = () => {
           <div className="text-white text-5xl font-semibold">
             Креирај Профил
           </div>
-          <form onSubmit={handleInputChange}>
+          <form className="flex-cols" onSubmit={handleInputChange}>
             <input
               type="text"
               id="fullName"
               autoComplete="off"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3 mb-2"
               placeholder="Име и Презиме"
               name="name"
               required
@@ -66,9 +78,10 @@ const Register = () => {
             <input
               type="text"
               id="email"
+              autoComplete="off"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3 mb-2"
               placeholder="Емаил"
               name="email"
               required
@@ -76,9 +89,10 @@ const Register = () => {
             <input
               type="password"
               id="password"
+              autoComplete="off"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3 mb-2"
               placeholder="Лозинка"
               name="password"
               required
@@ -91,6 +105,11 @@ const Register = () => {
               Најави се
             </button>
           </form>
+          <div>
+            <a href="http://localhost:3000/login">
+              Already a user?<b>Login</b>
+            </a>
+          </div>
           <div className="flex justify-evenly">
             <a
               href="http://localhost:5000/moe-kargo/auth/facebook"

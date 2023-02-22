@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useState } from "react";
-import { Dialog, Menu, Transition } from "@headlessui/react";
+import { Fragment, useContext, useEffect, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 import {
   AdjustmentsHorizontalIcon,
   Bars3BottomLeftIcon,
@@ -14,6 +14,8 @@ import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { getUser } from "../lib/user";
+import { UserContext } from "../context/UserContext";
 
 const nav1 = [
   {
@@ -57,14 +59,31 @@ function classNames(...classes) {
 }
 
 export const DashLayout = (props) => {
-  console.log("PROPS:", props);
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [user, setUser] = useContext(UserContext);
+  // const { name } = user;
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     router.push("/login");
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await getUser();
+        console.log(res.data);
+        setUser(res.data);
+      } catch (error) {
+        console.log(error);
+        localStorage.removeItem("token");
+        router.push("/login");
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <div>
@@ -282,7 +301,7 @@ export const DashLayout = (props) => {
       <div className="flex flex-1 flex-col md:pl-64">
         <div className="flex items-center justify-between flex-shrink-0 bg-gradient-to-r from-purple-500 to-blue-400 shadow px-8 py-12">
           <div className="space-y-3 text-white">
-            <p className="text-5xl">Naqetaaa</p>
+            <p className="text-5xl"> Здраво {user?.fullName}</p>
             <p className="text-xl">Твои Зачувани Продавници</p>
           </div>
           <div className="flex flex-shrink justify-between px-4">
@@ -311,7 +330,7 @@ export const DashLayout = (props) => {
               <button
                 onClick={handleLogout}
                 id="logout-btn"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded ml-2"
               >
                 Logout
               </button>
@@ -326,7 +345,6 @@ export const DashLayout = (props) => {
             <Bars3BottomLeftIcon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-
         {props.children}
       </div>
     </div>

@@ -3,9 +3,10 @@ import { DashLayout } from "../layouts/DashLayout";
 import { ShopsCard } from "../components/ShopsCard";
 import circle from "../public/plus_circle.svg";
 import { ArrowLongRightIcon } from "@heroicons/react/20/solid";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { ProductModal } from "../components/dashboard/ProductModal";
 import api from "../lib/api";
+import { ProductContext } from "../context/ProductContext";
 
 function Dashboard() {
   const [text, setText] = useState("");
@@ -17,36 +18,19 @@ function Dashboard() {
   const [updatedOrders, setUpdatedOrders] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
+  const [products, setProducts] = useContext(ProductContext);
 
   useEffect(() => {
     // ti lexojm pe ne api
     getData();
-    getUser();
-    console.log(getUser);
   }, []);
 
   const getData = () => {
     api.get("/products").then((res) => {
       console.log(res);
       setOrders(res.data);
+      setProducts(res.data);
     });
-  };
-
-  const getUser = () => {
-    const token = localStorage.getItem("token");
-    api
-      .post(
-        "/me",
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res);
-      });
   };
 
   useEffect(() => {
@@ -93,7 +77,7 @@ function Dashboard() {
   };
 
   const handleDelete = (id) => {
-    // Ktu vondoe logjiken a artikullit te ri
+    console.log({ id });
     const token = localStorage.getItem("token");
     api
       .delete(`/deleteProduct${id}`, {
@@ -171,6 +155,7 @@ function Dashboard() {
               noButton={true}
               noDelete={true}
             />
+            {/* {(products.length ? products : []).map( */}
             {(orders.length ? orders : []).map(
               ({ id, name, price, description }, index) => (
                 <Item
