@@ -59,6 +59,7 @@ function Dashboard() {
       .put(
         `/addProduct${id}`,
         {
+          productId: id,
           name: order.text,
           description: order.address,
           price: order.price,
