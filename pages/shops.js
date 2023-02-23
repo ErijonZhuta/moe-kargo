@@ -42,20 +42,20 @@ function Shops() {
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
   const [id, setId] = useState("");
-  
+
   const [shops, setShops] = useState(shopsApi);
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
-  
+
   useEffect(() => {
     // ekzekutohet sa here qe orders ndryshon
     console.log(shops);
   }, [shops]);
-  
+
   useEffect(() => {
     console.log(isOpen);
   }, [isOpen]);
-  
+
   const handleEdit = (id) => {
     setShow(true);
     setIsOpen(true);
@@ -64,22 +64,19 @@ function Shops() {
     setImage(shop.image);
     setText(shop.text);
     setId(shop.id);
-
   };
   const handleUpdate = (shop) => {
-    console.log(id)
+    console.log(id);
 
     const updatedShops = shops.map((shopp) => {
       if (shopp.id === shop.id) {
-        return shop; 
+        return shop;
       }
       return shopp;
-      
     });
-      setShops(updatedShops);
-      closeModal();
-    };
-
+    setShops(updatedShops);
+    closeModal();
+  };
 
   const onClickHandler = () => {
     setShow(false);
@@ -140,16 +137,18 @@ function Shops() {
                 // width={width}
               />
             ))}
-            <ShopModal
-              id={id}
-              text={text}
-              image={image}
-              closeModal={closeModal}
-              isOpen={isOpen}
-              addItem={addItem}
-              show={show}
-              handleUpdate={handleUpdate}
-            />
+            {isOpen && (
+              <ShopModal
+                id={id}
+                text={text}
+                image={image}
+                isOpen={isOpen}
+                show={show}
+                addItem={addItem}
+                handleUpdate={handleUpdate}
+                closeModal={closeModal}
+              />
+            )}
           </div>
           {/* </div> */}
         </div>

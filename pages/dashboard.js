@@ -29,18 +29,18 @@ function Dashboard() {
     api.get("/products").then((res) => {
       console.log(res);
       setOrders(res.data);
-      setProducts(res.data);
+      // setProducts(res.data);
     });
   };
+
+  useEffect(() => {
+    setOrders(updatedOrders);
+  }, [updatedOrders]);
 
   useEffect(() => {
     // ekzekutohet sa here qe orders ndryshon
     console.log({ orders });
   }, [orders]);
-
-  useEffect(() => {
-    setOrders(updatedOrders);
-  }, [updatedOrders]);
 
   const handleEdit = (idd) => {
     setShow(true);
@@ -120,6 +120,7 @@ function Dashboard() {
           price: newItem.price,
         });
         closeModal();
+        console.log(orders);
       })
       .catch((error) => console.error(error));
   };
@@ -140,10 +141,6 @@ function Dashboard() {
     <DashLayout>
       <main className="bg-gradient-to-l to-gray-100 from-purple-100 min-h-screen">
         <div className="py-6">
-          {/* <div className="mx-
-          auto max-w-7xl px-4 sm:px-6 md:px-8">
-            <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-          </div> */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mx-auto max-w-full px-4 sm:px-6">
             {/* Permbajtja e faqes */}
             <ShopsCard
@@ -175,10 +172,10 @@ function Dashboard() {
                 address={address}
                 price={price}
                 isOpen={isOpen}
-                closeModal={closeModal}
-                handleUpdate={handleUpdate}
-                addItem={addItem}
                 show={show}
+                addItem={addItem}
+                handleUpdate={handleUpdate}
+                closeModal={closeModal}
               />
             )}
           </div>
