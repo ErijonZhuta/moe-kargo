@@ -3,28 +3,26 @@ import { useState, useEffect, useContext } from "react";
 import api from "../lib/api";
 import QRCode from "react-qr-code";
 import { UserContext } from "../context/UserContext";
+import { ProductContext } from "../context/ProductContext";
 
 function Cargo() {
-  const [orders, setOrders] = useState([]);
   const [user, setUser] = useContext(UserContext);
+  const [products, setProducts] = useContext(ProductContext);
+  const [selectedProduct, setSelectedProduct] = useState({});
+
+  useEffect(() => {
+    setSelectedProduct(products.find((prod) => prod.price === 400));
+  }, [products]);
+
   useEffect(() => {
     // ti lexojm pe ne api
     getData();
   }, []);
 
-  useEffect(() => {
-    // ekzekutohet sa here qe orders ndryshon
-    console.log({ orders });
-  }, [orders]);
-
-  useEffect(() => {
-    // ekzekutohet sa here qe orders ndryshon
-    console.log({ orders });
-  }, [orders]);
   const getData = () => {
     api.get("/products").then((res) => {
       console.log(res.data);
-      setOrders(res.data);
+      setProducts(res.data);
     });
   };
 
@@ -38,12 +36,12 @@ function Cargo() {
                 <div className="flex flex-col">
                   <h1 className="text-2xl font-bold">{user?.fullName}</h1>
                   <div className="flex justify-between">
-                    <p>Адреса: {user?.address}</p>
-                    <p>ул.Црвена Вода бр.6</p>
+                    <p>Адреса: </p>
+                    <p>{selectedProduct?.name}</p>
                   </div>
                   <div className="flex justify-between">
                     <p>Град:</p>
-                    <p>Скопје</p>
+                    <p>{selectedProduct?.description}</p>
                   </div>
                   <div className="flex justify-between">
                     <p>Тел:</p>
@@ -57,8 +55,8 @@ function Cargo() {
             </div>
             <div className="flex flex-col py-4 ">
               <h3 className="text-blue-600 font-semibold pb-2">Продавници:</h3>
-              {orders &&
-                orders.map((order, index) => (
+              {products &&
+                products.map((order, index) => (
                   <div key={index}>
                     <p>{order.name}</p>
                     <li>{order.description}</li>

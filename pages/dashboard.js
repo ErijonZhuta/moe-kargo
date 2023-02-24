@@ -14,8 +14,6 @@ function Dashboard() {
   const [price, setPrice] = useState("");
   const [id, setId] = useState("");
 
-  const [orders, setOrders] = useState([]);
-  const [updatedOrders, setUpdatedOrders] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
   const [products, setProducts] = useContext(ProductContext);
@@ -27,26 +25,15 @@ function Dashboard() {
 
   const getData = () => {
     api.get("/products").then((res) => {
-      console.log(res);
-      setOrders(res.data);
-      // setProducts(res.data);
+      setProducts(res.data);
     });
   };
-
-  useEffect(() => {
-    setOrders(updatedOrders);
-  }, [updatedOrders]);
-
-  useEffect(() => {
-    // ekzekutohet sa here qe orders ndryshon
-    console.log({ orders });
-  }, [orders]);
 
   const handleEdit = (idd) => {
     setShow(true);
     openModal();
 
-    const order = orders.find((order) => order.id === idd);
+    const order = products.find((order) => order.id === idd);
 
     setText(order.name);
     setAddress(order.description);
@@ -87,7 +74,7 @@ function Dashboard() {
         },
       })
       .then((res) => {
-        setOrders(orders.filter((order) => order.id != id));
+        setProducts(products.filter((order) => order.id != id));
       })
       .catch((error) => console.error(error));
   };
@@ -114,14 +101,14 @@ function Dashboard() {
         }
       )
       .then((res) => {
-        orders.push({
-          id: orders.at(-1) ? orders.at(-1).id + 1 : 1,
-          name: newItem.text,
-          description: newItem.address,
-          price: newItem.price,
-        });
+        // products.push({
+        //   id: products.at(-1) ? products.at(-1).id + 1 : 1,
+        //   name: newItem.text,
+        //   description: newItem.address,
+        //   price: newItem.price,
+        // });
+        getData();
         closeModal();
-        console.log(orders);
       })
       .catch((error) => console.error(error));
   };
@@ -154,7 +141,7 @@ function Dashboard() {
               noDelete={true}
             />
             {/* {(products.length ? products : []).map( */}
-            {(orders.length ? orders : []).map(
+            {(products.length ? products : []).map(
               ({ id, name, price, description }, index) => (
                 <Item
                   key={`${id}${index}`}
